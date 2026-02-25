@@ -51,4 +51,10 @@ class User extends Authenticatable
             'reputation_score' => 'integer'
         ];
     }
+
+
+
+    public function memberships(){
+        return $this->hasMany(Membership::class);
+    }
 }
