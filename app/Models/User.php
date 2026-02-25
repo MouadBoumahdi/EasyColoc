@@ -54,7 +54,36 @@ class User extends Authenticatable
 
 
 
-    public function memberships(){
+    /**
+     * Relationship with Membership
+     */
+    public function membership()
+    {
         return $this->hasMany(Membership::class);
+    }
+
+    /**
+     * Check if user is in an active colocation
+     */
+    public function hasActiveColocation()
+    {
+        return $this->membership()->where('is_active', true)->exists();
+    }
+
+    /**
+     * Get the active membership of the user
+     */
+    public function activeMembership()
+    {
+        return $this->membership()->where('is_active', true)->first();
+    }
+
+    /**
+     * Check if user is the owner of their active colocation
+     */
+    public function isColocationOwner()
+    {
+        $active = $this->activeMembership();
+        return $active && $active->role === 'owner';
     }
 }

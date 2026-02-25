@@ -7,9 +7,16 @@
     <div class="flex items-center justify-between mb-10">
         <h1 class="text-2xl font-bold tracking-tight text-slate-800 italic uppercase">Tableau de Bord</h1>
         
-        <a href="#" class="bg-[#4F46E5] text-white px-6 py-2.5 rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-indigo-200 hover:bg-[#4338CA] transition-all">
-            <span class="text-lg">+</span> Nouvelle colocation
-        </a>
+        @if(!Auth::user()->hasActiveColocation())
+        <div class="flex items-center gap-3">
+            <a href="{{ route('colocations.create') }}" class="bg-[#4F46E5] text-white px-6 py-2.5 rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-indigo-100 hover:bg-[#4338CA] transition-all">
+                <span class="text-lg">+</span> Nouvelle colocation
+            </a>
+            <a href="#" class="bg-white text-slate-600 border border-slate-200 px-6 py-2.5 rounded-2xl font-bold flex items-center gap-2 hover:bg-slate-50 transition-all">
+                <i class="fa-solid fa-link text-sm"></i> Rejoindre une colocation
+            </a>
+        </div>
+        @endif
     </div>
 
     <!-- Stats Cards Grid -->
@@ -79,19 +86,39 @@
         <!-- Sidebar Actions & Info (1/3 width) -->
         <div class="space-y-8">
             <!-- Colocation Status -->
-            <div class="bg-[#1E293B] rounded-[2rem] p-8 text-white relative h-min shadow-2xl shadow-slate-200">
-                <div class="flex items-center justify-between mb-8">
-                    <h3 class="font-bold text-lg">Membres de la coloc</h3>
-                    <span class="bg-indigo-500/20 text-indigo-300 text-[10px] font-bold px-3 py-1 rounded-md tracking-tighter uppercase border border-indigo-500/30 italic">En attente</span>
-                </div>
-                
-                <div class="py-4">
-                    <p class="text-slate-400 text-sm leading-relaxed mb-6">Vous ne faites partie d'aucune colocation active pour le moment.</p>
-                    <a href="#" class="block w-full text-center py-4 bg-white/10 hover:bg-white/20 rounded-2xl text-sm font-bold transition-all border border-white/10 group">
-                        <i class="fa-solid fa-paper-plane mr-2 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform"></i>
-                        Créer ou Rejoindre
-                    </a>
-                </div>
+            <div class="bg-[#1E293B] rounded-[2rem] p-8 text-white relative h-min shadow-2xl shadow-slate-200 overflow-hidden">
+                @if(Auth::user()->hasActiveColocation())
+                    <div class="flex items-center justify-between mb-8">
+                        <h3 class="font-bold text-lg italic">Ma Colocation</h3>
+                        <span class="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-3 py-1 rounded-md tracking-tighter uppercase border border-emerald-500/30">Active</span>
+                    </div>
+
+                    <div class="space-y-4 mb-8">
+                        <!-- Static Member list for design -->
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center text-[10px] font-bold">ME</div>
+                            <div>
+                                <p class="text-sm font-bold leading-none">{{ Auth::user()->name }}</p>
+                                <p class="text-[10px] text-slate-400">Propriétaire</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if(Auth::user()->isColocationOwner())
+                        <a href="#" class="block w-full text-center py-4 bg-indigo-600 hover:bg-indigo-700 rounded-2xl text-sm font-bold transition-all shadow-lg shadow-indigo-900/20">
+                            <i class="fa-solid fa-user-plus mr-2"></i> Inviter des colocs
+                        </a>
+                    @endif
+                @else
+                    <div class="flex items-center justify-between mb-8">
+                        <h3 class="font-bold text-lg">Membres de la coloc</h3>
+                        <span class="bg-indigo-500/20 text-indigo-300 text-[10px] font-bold px-3 py-1 rounded-md tracking-tighter uppercase border border-indigo-500/30 italic">En attente</span>
+                    </div>
+                    
+                    <div class="py-4">
+                        <p class="text-slate-400 text-sm leading-relaxed italic">Vous ne faites partie d'aucune colocation active pour le moment. Créez-en une ou utilisez un lien d'invitation pour rejoindre vos colocataires.</p>
+                    </div>
+                @endif
             </div>
 
             <!-- Summary of Debts Placeholder -->
