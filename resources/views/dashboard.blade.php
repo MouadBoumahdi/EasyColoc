@@ -13,11 +13,18 @@
                 <span class="text-lg">+</span> Nouvelle colocation
             </a>
         </div>
-        @else
+        @elseif(Auth::user()->hasActiveColocation() && Auth::user()->isColocationOwner())
         <form action="{{ route('colocations.leave') }}" method="POST">
             @csrf
             <button type="submit" class="bg-red-500 text-white px-6 py-2.5 rounded-2xl font-bold flex items-center gap-2 hover:bg-red-600 transition-all">
                 <i class="fa-solid fa-right-from-bracket text-sm"></i> Cancel colocation
+            </button>
+        </form>
+        @else
+        <form action="{{ route('colocations.leave') }}" method="POST">
+            @csrf
+            <button type="submit" class="bg-red-500 text-white px-6 py-2.5 rounded-2xl font-bold flex items-center gap-2 hover:bg-red-600 transition-all">
+                <i class="fa-solid fa-right-from-bracket text-sm"></i> Leave colocation
             </button>
         </form>
         @endif
@@ -134,22 +141,29 @@
                     </div>
                 @endif
             </div>
-
-            <!-- Summary of Debts Placeholder -->
-            <div class="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm group">
-                <h3 class="font-bold text-slate-800 mb-6 flex items-center gap-2">
-                    <i class="fa-solid fa-scale-balanced text-indigo-500"></i>
-                    Qui doit quoi ?
-                </h3>
-                <div class="space-y-4 opacity-50">
-                    <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50">
-                        <div class="w-8 h-8 rounded-lg bg-slate-200"></div>
-                        <div class="flex-1 h-3 bg-slate-200 rounded mx-4"></div>
-                        <div class="w-12 h-3 bg-slate-200 rounded"></div>
-                    </div>
+            @if(Auth::user()->isColocationOwner())
+            <div class="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm relative overflow-hidden group">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 italic uppercase text-sm">
+                        <i class="fa-solid fa-tags text-indigo-500"></i>
+                        Catégories
+                    </h3>
                 </div>
-                <p class="mt-6 text-xs text-slate-400 text-center italic">Activez une colocation pour voir vos soldes.</p>
+
+                <div class="relative">
+                    <form action="{{ route('categories.store') }}" method="POST">
+                        @csrf
+                        <input type="text" name='name' placeholder="Nouvelle catégorie..." 
+                        class="w-full pl-5 pr-12 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm text-slate-700">
+                        <button type="submit" class="absolute right-2 top-2 w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200">
+                            <i class="fa-solid fa-plus text-xs"></i>
+                        </button>
+                    </form>
+                </div>
+
+               
             </div>
+            @endif
         </div>
     </div>
 

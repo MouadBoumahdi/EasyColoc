@@ -49,17 +49,28 @@ class ColocationController extends Controller
     }
 
 
-    public function leave(){
+    public function leave()
+    {
         $authUser = Auth::user();
-        $membership = Membership::where('user_id', $authUser->id)
-        ->where('is_active',true)
-        ->first();
+        $membership = $authUser->activeMembership();
 
-        if($membership){
-            $membership->update([
-                'is_active'=>false
-            ]);
-            return redirect()->route('dashboard')->with('success','vous avez quittez la colocation');
+        if (!$membership) {
+            return back()->with('error', 'Vous n\'avez pas de colocation active.');
         }
+
+        if ($membership->role === 'owner') {
+            $colocation = $membership->colocation;
+
+            Membership::where('colocation_id', $colocation->id)
+                ->update(['is_active' => false]);
+
+            $colocation->update(['status' => 'cancelled']);
+
+            return redirect()->route('dashboard')->with('success', 'Colocation annulée pour tous les membres.');
+        } 
+
+        $membership->update(['is_active' => false]);
+
+        return redirect()->route('dashboard')->with('success', 'Vous avez quitté la colocation.');
     }
 }

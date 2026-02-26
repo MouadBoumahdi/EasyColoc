@@ -19,7 +19,8 @@ class AdminController extends Controller
 
 
 
-    public function toggleBan(User $user){
+    public function toggleBan(User $user)
+    {
         if($user->id === auth()->id()){
             return back()->withErrors(['error' => "You can't ban yourself."]);
         }

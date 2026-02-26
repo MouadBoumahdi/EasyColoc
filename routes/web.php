@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ColocationController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\EnsureUserNotBanned;
 
@@ -37,6 +38,10 @@ Route::middleware(['auth',EnsureUserNotBanned::class])->group(function () {
         ->name('invitations.accept');
     Route::get('/invitations/refuse/{token}', [\App\Http\Controllers\InvitationController::class, 'refuse'])
         ->name('invitations.refuse');
+
+    // categories
+    Route::post('/categories/store', [CategoryController::class, 'store'])
+        ->name('categories.store');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
