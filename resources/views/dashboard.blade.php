@@ -12,10 +12,14 @@
             <a href="{{ route('colocations.create') }}" class="bg-[#4F46E5] text-white px-6 py-2.5 rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-indigo-100 hover:bg-[#4338CA] transition-all">
                 <span class="text-lg">+</span> Nouvelle colocation
             </a>
-            <a href="#" class="bg-white text-slate-600 border border-slate-200 px-6 py-2.5 rounded-2xl font-bold flex items-center gap-2 hover:bg-slate-50 transition-all">
-                <i class="fa-solid fa-link text-sm"></i> Rejoindre une colocation
-            </a>
         </div>
+        @else
+        <form action="{{ route('colocations.leave') }}" method="POST">
+            @csrf
+            <button type="submit" class="bg-red-500 text-white px-6 py-2.5 rounded-2xl font-bold flex items-center gap-2 hover:bg-red-600 transition-all">
+                <i class="fa-solid fa-right-from-bracket text-sm"></i> Cancel colocation
+            </button>
+        </form>
         @endif
     </div>
 
@@ -94,20 +98,30 @@
                     </div>
 
                     <div class="space-y-4 mb-8">
-                        <!-- Static Member list for design -->
+                        @foreach(Auth::user()->activeMembership()->colocation->membership()->where('is_active', true)->get() as $m)
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center text-[10px] font-bold">ME</div>
+                            <div class="w-8 h-8 rounded-lg {{ $m->user_id === Auth::id() ? 'bg-indigo-500' : 'bg-slate-700' }} flex items-center justify-center text-[10px] font-bold">
+                                {{ substr($m->user->name, 0, 1) }}
+                            </div>
                             <div>
-                                <p class="text-sm font-bold leading-none">{{ Auth::user()->name }}</p>
-                                <p class="text-[10px] text-slate-400">Propriétaire</p>
+                                <p class="text-sm font-bold leading-none">
+                                    {{ $m->user->name }}
+                                    @if($m->user_id === Auth::id()) 
+                                        <span class="text-[10px] text-indigo-400 font-normal ml-1">(Moi)</span>
+                                    @endif
+                                </p>
+                                <p class="text-[10px] text-slate-400">
+                                    {{ $m->role === 'owner' ? 'Owner' : 'Membre' }}
+                                </p>
                             </div>
                         </div>
+                        @endforeach
                     </div>
 
                     @if(Auth::user()->isColocationOwner())
-                        <a href="#" class="block w-full text-center py-4 bg-indigo-600 hover:bg-indigo-700 rounded-2xl text-sm font-bold transition-all shadow-lg shadow-indigo-900/20">
+                        <button onclick="document.getElementById('inviteModal').classList.remove('hidden')" class="block w-full text-center py-4 bg-indigo-600 hover:bg-indigo-700 rounded-2xl text-sm font-bold transition-all shadow-lg shadow-indigo-900/20 text-white">
                             <i class="fa-solid fa-user-plus mr-2"></i> Inviter des colocs
-                        </a>
+                        </button>
                     @endif
                 @else
                     <div class="flex items-center justify-between mb-8">
@@ -138,4 +152,41 @@
             </div>
         </div>
     </div>
+
+    <!-- Invitation Modal -->
+    <div id="inviteModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-[2.5rem] w-full max-w-md p-10 shadow-2xl relative animate-[fadeIn_0.2s_ease-out]">
+            <button onclick="document.getElementById('inviteModal').classList.add('hidden')" class="absolute top-8 right-8 text-slate-400 hover:text-slate-600 transition-colors">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            
+            <div class="mb-8">
+                <div class="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 mb-6 font-bold text-xl">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-900 italic uppercase">Inviter un colocataire</h2>
+                <p class="text-slate-500 text-sm mt-1">Envoyez une invitation par email pour rejoindre votre colocation.</p>
+            </div>
+
+            <form action="{{ route('invitations.send') }}" method="POST" class="space-y-6">
+                @csrf
+                <div>
+                    <label for="email" class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Adresse Email</label>
+                    <input type="email" name="email" id="email" required placeholder="exemple@email.com" 
+                        class="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-slate-700">
+                </div>
+
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-100 transition-all flex items-center justify-center gap-2">
+                    Envoyer l'invitation <i class="fa-solid fa-arrow-right text-xs"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
 @endsection

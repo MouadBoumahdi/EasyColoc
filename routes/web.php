@@ -26,6 +26,17 @@ Route::middleware(['auth',EnsureUserNotBanned::class])->group(function () {
     // colocation
     Route::get('/colocations/create', [ColocationController::class,'create'])->name('colocations.create');
     Route::post('/colocations/store', [ColocationController::class,'store'])->name('colocations.store');
+    Route::post('/colocations/leave', [ColocationController::class,'leave'])->name('colocations.leave');
+
+    // Invitations
+    Route::post('/invitations/send', [\App\Http\Controllers\InvitationController::class, 'store'])
+        ->name('invitations.send');
+    Route::get('/invitations/choose/{token}', [\App\Http\Controllers\InvitationController::class, 'choose'])
+        ->name('invitations.choose');
+    Route::get('/invitations/accept/{token}', [\App\Http\Controllers\InvitationController::class, 'accept'])
+        ->name('invitations.accept');
+    Route::get('/invitations/refuse/{token}', [\App\Http\Controllers\InvitationController::class, 'refuse'])
+        ->name('invitations.refuse');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

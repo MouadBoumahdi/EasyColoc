@@ -51,8 +51,8 @@
             <nav class="flex-1 px-4 space-y-2">
                 <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Menu</p>
                 
-                <a href="#" class="sidebar-item-active flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all group">
-                    <i class="fa-solid fa-gauge-high w-5 text-indigo-500"></i>
+                <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'sidebar-item-active' : 'text-slate-500 hover:bg-slate-50 hover:text-indigo-600' }} flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all group">
+                    <i class="fa-solid fa-gauge-high w-5 {{ request()->routeIs('dashboard') ? 'text-indigo-500' : 'group-hover:text-indigo-600' }}"></i>
                     <span>Dashboard</span>
                 </a>
                 
@@ -71,15 +71,18 @@
 
                 <div class="pt-4">
                     <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Compte</p>
-                    <a href="#" class="text-slate-500 hover:bg-slate-50 hover:text-indigo-600 flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all group">
-                        <i class="fa-solid fa-user-gear w-5 group-hover:text-indigo-600 transition-colors"></i>
+                    <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.edit') ? 'sidebar-item-active' : 'text-slate-500 hover:bg-slate-50 hover:text-indigo-600' }} flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all group">
+                        <i class="fa-solid fa-user-gear w-5 {{ request()->routeIs('profile.edit') ? 'text-indigo-500' : 'group-hover:text-indigo-600' }}"></i>
                         <span>Profile</span>
                     </a>
                     
-                    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-rose-500 hover:bg-rose-50 font-medium transition-all group">
-                        <i class="fa-solid fa-arrow-right-from-bracket w-5"></i>
-                        <span>Déconnexion</span>
-                    </a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="flex items-center gap-3 px-4 py-3 rounded-xl text-rose-500 hover:bg-rose-50 font-medium transition-all group">
+                            <i class="fa-solid fa-arrow-right-from-bracket w-5"></i>
+                            <span>Déconnexion</span>
+                        </button>
+                    </form>
                 </div>
             </nav>
 
@@ -104,17 +107,31 @@
             <header class="h-16 flex items-center justify-end px-8 bg-white/50 backdrop-blur-sm border-b border-slate-100">
                 <div class="flex items-center gap-4">
                     <div class="text-right">
-                        <p class="text-sm font-bold text-slate-700 leading-tight">USER 2</p>
+                        <p class="text-sm font-bold text-slate-700 leading-tight">{{ Auth::user()->name }}</p>
                         <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-tighter">En ligne</p>
                     </div>
                     <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-700 font-bold border border-indigo-200">
-                        U
+                        {{ substr(Auth::user()->name, 0, 1) }}
                     </div>
                 </div>
             </header>
 
             <!-- Main Content -->
             <main class="flex-1 overflow-y-auto p-8 custom-scrollbar">
+                @if(session('success'))
+                    <div class="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-2xl flex items-center gap-3 animate-pulse">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span class="font-bold text-sm">{{ session('success') }}</span>
+                    </div>
+                @endif
+
+                @if(session('error'))
+                    <div class="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-700 rounded-2xl flex items-center gap-3">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span class="font-bold text-sm">{{ session('error') }}</span>
+                    </div>
+                @endif
+
                 @yield('content')
             </main>
         </div>

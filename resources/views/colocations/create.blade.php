@@ -51,7 +51,7 @@
                         class="flex-1 bg-indigo-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-100 hover:bg-indigo-700 hover:-translate-y-0.5 transition-all">
                         Confirmer la création
                     </button>
-                    <a href="#" class="px-8 py-4 bg-slate-50 text-slate-500 font-bold rounded-2xl hover:bg-slate-100 transition-all text-center">
+                    <a href="{{ route('dashboard') }}" class="px-8 py-4 bg-slate-50 text-slate-500 font-bold rounded-2xl hover:bg-slate-100 transition-all text-center">
                        Annuler
                     </a>
                 </div>

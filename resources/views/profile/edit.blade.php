@@ -1,29 +1,37 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-profile-information-form')
-                </div>
+@section('title', 'Mon Profil')
+
+@section('content')
+    <!-- Header Section -->
+    <div class="flex items-center justify-between mb-10">
+        <h1 class="text-2xl font-bold tracking-tight text-slate-800 italic uppercase">Mon Profil</h1>
+    </div>
+
+    <div class="space-y-8">
+        <!-- Profile Info -->
+        <div class="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-sm border border-slate-100 group transition-all duration-500">
+            <div class="max-w-xl">
+                <h3 class="text-lg font-bold text-slate-800 mb-6">Informations du profil</h3>
+                @include('profile.partials.update-profile-information-form')
             </div>
+        </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-password-form')
-                </div>
+        <!-- Update Password -->
+        <div class="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-sm border border-slate-100 group transition-all duration-500">
+            <div class="max-w-xl">
+                <h3 class="text-lg font-bold text-slate-800 mb-6">Mettre à jour le mot de passe</h3>
+                @include('profile.partials.update-password-form')
             </div>
+        </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.delete-user-form')
-                </div>
+        <!-- Delete Account -->
+        <div class="bg-rose-50 rounded-[2.5rem] p-8 md:p-12 shadow-sm border border-rose-100 group transition-all duration-500">
+            <div class="max-w-xl">
+                <h3 class="text-lg font-bold text-rose-800 mb-2">Supprimer le compte</h3>
+                <p class="text-sm text-rose-600 mb-6">Une fois votre compte supprimé, toutes ses ressources et données seront définitivement effacées.</p>
+                @include('profile.partials.delete-user-form')
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection

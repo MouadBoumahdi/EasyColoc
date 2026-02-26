@@ -10,17 +10,13 @@ class Colocation extends Model
 {
     protected $fillable = ['name', 'owner_id', 'status'];
 
-    /**
-     * Relationship with User (Owner)
-     */
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
 
-    /**
-     * Relationship with Membership
-     */
+
     public function membership(): HasMany
     {
         return $this->hasMany(Membership::class);
