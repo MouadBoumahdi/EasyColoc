@@ -142,27 +142,33 @@
                 @endif
             </div>
             @if(Auth::user()->isColocationOwner())
-            <div class="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm relative overflow-hidden group">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="font-bold text-slate-800 flex items-center gap-2 italic uppercase text-sm">
-                        <i class="fa-solid fa-tags text-indigo-500"></i>
-                        Catégories
-                    </h3>
-                </div>
-
-                <div class="relative">
-                    <form action="{{ route('categories.store') }}" method="POST">
-                        @csrf
-                        <input type="text" name='name' placeholder="Nouvelle catégorie..." 
-                        class="w-full pl-5 pr-12 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm text-slate-700">
-                        <button type="submit" class="absolute right-2 top-2 w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200">
-                            <i class="fa-solid fa-plus text-xs"></i>
-                        </button>
-                    </form>
-                </div>
-
-               
+        <div class="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm relative overflow-hidden group">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="font-bold text-slate-800 flex items-center gap-2 italic uppercase text-sm">
+                    <i class="fa-solid fa-tags text-indigo-500"></i>
+                    Catégories
+                </h3>
             </div>
+
+            <div class="relative mb-6">
+                <form action="{{ route('categories.store') }}" method="POST">
+                    @csrf
+                    <input type="text" name='name' placeholder="Nouvelle catégorie..." 
+                    class="w-full pl-5 pr-12 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm text-slate-700">
+                    <button type="submit" class="absolute right-2 top-2 w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                    </button>
+                </form>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+                @foreach($categories as $category)
+                    <span class="inline-flex items-center px-4 py-2 bg-indigo-50 text-indigo-700 text-xs font-semibold rounded-xl border border-indigo-100 transition-all hover:bg-indigo-100">
+                        {{ $category->name }}
+                    </span>
+                @endforeach
+            </div>
+        </div>
             @endif
         </div>
     </div>

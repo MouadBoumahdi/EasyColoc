@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ColocationController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\EnsureUserNotBanned;
 
@@ -15,9 +16,8 @@ Route::get('/', function () {
 
 Route::middleware(['auth',EnsureUserNotBanned::class])->group(function () {
 
-    Route::get('/dashboard',function(){
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard',[DashboardController::class, 'index'])
+        ->name('dashboard');
 
   
     //admin 
@@ -42,6 +42,7 @@ Route::middleware(['auth',EnsureUserNotBanned::class])->group(function () {
     // categories
     Route::post('/categories/store', [CategoryController::class, 'store'])
         ->name('categories.store');
+    Route::get('/categories/show', [CategoryController::class, 'show']);
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
