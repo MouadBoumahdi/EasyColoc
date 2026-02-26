@@ -94,7 +94,6 @@
             </div>
         </div>
 
-        <!-- Sidebar Actions & Info (1/3 width) -->
         <div class="space-y-8">
             <!-- Colocation Status -->
             <div class="bg-[#1E293B] rounded-[2rem] p-8 text-white relative h-min shadow-2xl shadow-slate-200 overflow-hidden">
@@ -111,12 +110,22 @@
                                 {{ substr($m->user->name, 0, 1) }}
                             </div>
                             <div>
-                                <p class="text-sm font-bold leading-none">
-                                    {{ $m->user->name }}
-                                    @if($m->user_id === Auth::id()) 
-                                        <span class="text-[10px] text-indigo-400 font-normal ml-1">(Moi)</span>
+                            <div class="flex items-center gap-2">
+                                    <p class="text-sm font-bold leading-none">
+                                        {{ $m->user->name }}
+                                    </p>
+
+                                    @if(auth()->user()->isColocationOwner() && $m->role !== 'owner')
+                                        <form action="{{ route('colocation.remove', $m->user_id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" 
+                                                class="text-red-500 text-xs font-bold hover:text-red-700">
+                                                Delete
+                                            </button>
+                                        </form>
                                     @endif
-                                </p>
+                                </div>
+
                                 <p class="text-[10px] text-slate-400">
                                     {{ $m->role === 'owner' ? 'Owner' : 'Membre' }}
                                 </p>

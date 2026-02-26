@@ -10,7 +10,6 @@ class CategoryController extends Controller
 {
     public function store(StoreCategoryRequest $request){
         $user = auth()->user();
-        dd($user);
 
         $membership = $user->activeMembership();
         $colocation_id = $membership->colocation_id;

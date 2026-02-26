@@ -73,4 +73,18 @@ class ColocationController extends Controller
 
         return redirect()->route('dashboard')->with('success', 'Vous avez quitté la colocation.');
     }
+
+
+    public function removeMember($member_id){
+        $user = Auth::user();
+
+        
+        $membership = $user->activeMembership();
+        // dd($membership);
+        if($membership->role === 'owner'){
+            Membership::where('user_id',$member_id)->where('colocation_id',$membership->colocation_id)->delete();
+            return back()->with('success', 'Member removed.');
+
+        }
+    }
 }

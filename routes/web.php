@@ -28,6 +28,7 @@ Route::middleware(['auth',EnsureUserNotBanned::class])->group(function () {
     Route::get('/colocations/create', [ColocationController::class,'create'])->name('colocations.create');
     Route::post('/colocations/store', [ColocationController::class,'store'])->name('colocations.store');
     Route::post('/colocations/leave', [ColocationController::class,'leave'])->name('colocations.leave');
+    Route::post('/colocation/delete/{user_id}', [ColocationController::class,'removeMember'])->name('colocation.remove');
 
     // Invitations
     Route::post('/invitations/send', [\App\Http\Controllers\InvitationController::class, 'store'])
