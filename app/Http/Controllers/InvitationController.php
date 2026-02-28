@@ -18,13 +18,10 @@ class InvitationController extends Controller
     public function store(StoreInvitationRequest $request)
     { 
 
-        $user = auth()->user();
-        $membership = $user->activeMembership();
+        $membership = auth()->user()->activeMembership();
         
 
-        if (!$membership || $membership->role !== 'owner') {
-            return back()->with('error', 'Seul le propriétaire de la colocation peut envoyer des invitations.');
-        }
+        
 
         $colocation = $membership->colocation;
 
@@ -34,7 +31,7 @@ class InvitationController extends Controller
             ->first();
             
         if ($existingInvitation) {
-            return back()->with('error', 'Une invitation est déjà en cours pour cet email.');
+            return back()->with('error', 'exist deja');
         }
 
         $invitation = Invitation::create([
@@ -78,18 +75,17 @@ class InvitationController extends Controller
             return redirect()->route('dashboard')->with('error', 'Invitation invalide ou expirée.');
         }
 
-        $user = auth()->user();
 
-        if ($user->email !== $invitation->email) {
+        if (auth()->user()->email !== $invitation->email) {
             return redirect()->route('dashboard')->with('error', 'Cette invitation est destinée à un autre email.');
         }
 
-        if ($user->hasActiveColocation()) {
+        if (auth()->user()->hasActiveColocation()) {
             return redirect()->route('dashboard')->with('error', 'Vous avez déjà une colocation active.');
         }
 
         Membership::create([
-            'user_id' => $user->id,
+            'user_id' => auth()->user()->id,
             'colocation_id' => $invitation->colocation_id,
             'role' => 'member',
             'is_active' => true,
@@ -98,7 +94,7 @@ class InvitationController extends Controller
 
         $invitation->update(['status' => 'accepted']);
 
-        $user->increment('reputation_score');
+        // $user->increment('reputation_score');
 
         return redirect()->route('dashboard')->with('success', 'Bienvenue dans votre nouvelle colocation !');
     }

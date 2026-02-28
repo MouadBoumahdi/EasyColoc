@@ -56,19 +56,16 @@
                     <span>Dashboard</span>
                 </a>
                 
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-indigo-600 font-medium transition-all group">
-                    <i class="fa-solid fa-door-open w-5 group-hover:text-indigo-600 transition-colors"></i>
-                    <span>Colocations</span>
-                </a>
 
+                @if(auth()->user()->is_global_admin)
                 <div class="pt-4">
                     <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Administration</p>
-                    <a href="#" class="text-slate-500 hover:bg-slate-50 hover:text-indigo-600 flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all group">
+                    <a href="{{ route('admin.dashboard') }}" class="text-slate-500 hover:bg-slate-50 hover:text-indigo-600 flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all group">
                         <i class="fa-solid fa-shield-halved w-5 group-hover:text-indigo-600 transition-colors"></i>
                         <span>Admin Panel</span>
                     </a>
                 </div>
-
+                @endif
                 <div class="pt-4">
                     <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Compte</p>
                     <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.edit') ? 'sidebar-item-active' : 'text-slate-500 hover:bg-slate-50 hover:text-indigo-600' }} flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all group">
@@ -91,11 +88,11 @@
                 <div class="bg-[#0F172A] rounded-2xl p-4 text-white">
                     <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Réputation</p>
                     <div class="flex items-center justify-between mb-3">
-                        <div class="text-lg font-bold">150 points</div>
+                        <div class="text-lg font-bold">{{ auth()->user()->reputation_score }}</div>
                         <i class="fa-solid fa-crown text-amber-400 text-xs"></i>
                     </div>
                     <div class="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
-                        <div class="bg-indigo-500 h-full w-[65%]" style="width: 65%"></div>
+                        <div class="bg-indigo-500 h-full w-[65%]" style="width: {{ auth()->user()->reputation_score }}%"></div>
                     </div>
                 </div>
             </div>

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('expenses', function (Blueprint $table) {
+       Schema::create('expenses', function (Blueprint $table) {
             $table->id();
 
             $table->foreignId('colocation_id')
@@ -21,18 +21,14 @@ return new class extends Migration
             $table->foreignId('payer_id')
                 ->constrained('users');
 
-            $table->foreignId('category_id')
-                ->nullable()
-                ->constrained();
-
-            $table->string('title');
+            $table->string('category_name');
 
             $table->decimal('amount', 10, 2);
 
-            $table->date('expense_date');
+            $table->date('date');
 
             $table->timestamps();
-        });
+        }); 
     }
 
     /**
@@ -43,3 +39,5 @@ return new class extends Migration
         //
     }
 };
+
+

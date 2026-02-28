@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ColocationController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExpenseController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\EnsureUserNotBanned;
 
@@ -16,8 +17,8 @@ Route::get('/', function () {
 
 Route::middleware(['auth',EnsureUserNotBanned::class])->group(function () {
 
-    Route::get('/dashboard',[DashboardController::class, 'index'])
-        ->name('dashboard');
+    Route::get('/category',[CategoryController::class, 'index'])
+        ->name('category');
 
   
     //admin 
@@ -45,9 +46,18 @@ Route::middleware(['auth',EnsureUserNotBanned::class])->group(function () {
         ->name('categories.store');
     Route::get('/categories/show', [CategoryController::class, 'show']);
 
+    // expense
+    Route::get('/dashboard',[ExpenseController::class, 'index'])->name('dashboard');
+    Route::post('/expense/store',[ExpenseController::class, 'store'])->name('expense.store');
+    Route::delete('/expense/{expense}',[ExpenseController::class, 'destroy'])->name('expense.destroy');
+
+    // profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::post('/expense/settle', [ExpenseController::class, 'settle'])
+    ->name('expense.settle');
 });
 
 

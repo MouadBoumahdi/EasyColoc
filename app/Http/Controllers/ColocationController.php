@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreColocationRequest;
+use App\Http\Requests\StorebalanceRequest;
 
 class ColocationController extends Controller
 {
@@ -21,24 +22,16 @@ class ColocationController extends Controller
     public function store(StoreColocationRequest $request)
     {
 
-        $authenticatedUser = Auth::user();
-
-        $alreadyInColoc = Membership::where('user_id', $authenticatedUser->id)
-            ->where('is_active', true)
-            ->exists();
-
-        if ($alreadyInColoc) {
-            return back()->withErrors(['error' => 'Vous faites déjà partie d\'une colocation active.']);
-        }
+        
 
         $coloc = Colocation::create([
             'name' => $request->name,
-            'owner_id' => $authenticatedUser->id,
+            'owner_id' => auth()->user()->id,
             'status' => 'active',
         ]);
 
         Membership::create([
-            'user_id' => $authenticatedUser->id,
+            'user_id' => auth()->user()->id,
             'colocation_id' => $coloc->id,
             'role' => 'owner',
             'is_active' => true,
@@ -49,42 +42,48 @@ class ColocationController extends Controller
     }
 
 
-    public function leave()
-    {
-        $authUser = Auth::user();
-        $membership = $authUser->activeMembership();
+   public function leave(StorebalanceRequest $request)
+{
+    $membership = auth()->user()->activeMembership();
 
-        if (!$membership) {
-            return back()->with('error', 'Vous n\'avez pas de colocation active.');
+    $balance = $request->balance;
+
+    if ($membership->role === 'owner') {
+        $colocation = $membership->colocation;
+
+        Membership::where('colocation_id', $colocation->id)
+            ->update(['is_active' => false]);
+
+        $colocation->update(['status' => 'cancelled']);
+
+        if ($balance < 0) {
+            auth()->user()->decrement('reputation_score'); // -1
+        } else {
+            auth()->user()->increment('reputation_score'); // +1
         }
 
-        if ($membership->role === 'owner') {
-            $colocation = $membership->colocation;
-
-            Membership::where('colocation_id', $colocation->id)
-                ->update(['is_active' => false]);
-
-            $colocation->update(['status' => 'cancelled']);
-
-            return redirect()->route('dashboard')->with('success', 'Colocation annulée pour tous les membres.');
-        } 
-
-        $membership->update(['is_active' => false]);
-
-        return redirect()->route('dashboard')->with('success', 'Vous avez quitté la colocation.');
+        return redirect()->route('dashboard')->with('success', 'Colocation annulée pour tous les membres.');
     }
 
+    if ($balance < 0) {
+        auth()->user()->decrement('reputation_score'); // -1
+    } else {
+        auth()->user()->increment('reputation_score'); // +1
+    }
+
+    $membership->update(['is_active' => false]);
+
+    return redirect()->route('dashboard')->with('success', 'Vous avez quitté la colocation.');
+}
 
     public function removeMember($member_id){
-        $user = Auth::user();
+     
 
         
-        $membership = $user->activeMembership();
-        // dd($membership);
-        if($membership->role === 'owner'){
-            Membership::where('user_id',$member_id)->where('colocation_id',$membership->colocation_id)->delete();
+        $membership = auth()->user()->activeMembership();
+            Membership::where('user_id',$member_id)->where('colocation_id',$membership->colocation_id)
+                        ->delete();
             return back()->with('success', 'Member removed.');
 
-        }
     }
 }

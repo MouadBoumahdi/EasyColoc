@@ -8,23 +8,24 @@ use App\Models\Category;
 
 class CategoryController extends Controller
 {
-    public function store(StoreCategoryRequest $request){
-        $user = auth()->user();
 
-        $membership = $user->activeMembership();
-        $colocation_id = $membership->colocation_id;
+  
+
+    public function store(StoreCategoryRequest $request){
+
         
         Category::create([
-            'colocation_id' => $colocation_id,
+            'colocation_id' => auth()->user()->activeMembership()->colocation_id,
             'name' => $request->name
         ]);
-
 
 
         return redirect()->route('dashboard')->with('success','Categorie ajoutee avec succes !');
 
         
     }
+
+ 
 
 
 
